@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { NavLink,Link } from 'react-router-dom';
 import img from "./logo-no-background.png";
+import { CartContext } from '../CartContext';
 import { useAuth0, isAuthenticated } from "@auth0/auth0-react";
 
 
@@ -8,6 +9,8 @@ import { useAuth0, isAuthenticated } from "@auth0/auth0-react";
 function Navbat1() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [fname,setfname] = useState()
+  const { getTotalItems } = useContext(CartContext);
+  const totalItems = getTotalItems();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -50,9 +53,16 @@ function Navbat1() {
           
 
 
-<Link to="/addtocart"><svg className=" ml-6 pt-1   w-7 h-7 text-black dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 21">
-    <path d="M15 12a1 1 0 0 0 .962-.726l2-7A1 1 0 0 0 17 3H3.77L3.175.745A1 1 0 0 0 2.208 0H1a1 1 0 0 0 0 2h.438l.6 2.255v.019l2 7 .746 2.986A3 3 0 1 0 9 17a2.966 2.966 0 0 0-.184-1h2.368c-.118.32-.18.659-.184 1a3 3 0 1 0 3-3H6.78l-.5-2H15Z"/>
-  </svg></Link>
+          <Link to="/addtocart" className="relative flex items-center">
+      <svg className="ml-6 pt-1 w-7 h-7 text-black dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 21">
+        <path d="M15 12a1 1 0 0 0 .962-.726l2-7A1 1 0 0 0 17 3H3.77L3.175.745A1 1 0 0 0 2.208 0H1a1 1 0 0 0 0 2h.438l.6 2.255v.019l2 7 .746 2.986A3 3 0 1 0 9 17a2.966 2.966 0 0 0-.184-1h2.368c-.118.32-.18.659-.184 1a3 3 0 1 0 3-3H6.78l-.5-2H15Z"/>
+      </svg>
+      {totalItems > 0 && (
+        <span className="absolute top-0 right-0 inline-flex items-center justify-center w-4 h- text-xs font-medium text-white bg-red-600 rounded-full">
+          {totalItems}
+        </span>
+      )}
+    </Link>
  
 
 

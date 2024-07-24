@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { shoesData } from '../assets/data';
 import { Link, useParams } from 'react-router-dom';
 import { CartContext } from '../CartContext';
+import { ToastContainer, toast } from 'react-toastify';
 
 import { Carousel, IconButton } from "@material-tailwind/react";
 
@@ -10,6 +11,14 @@ export default function ProductOverviewOne() {
     const { id } = useParams();
   const shoe = shoesData[id];
   const { addToCart } = useContext(CartContext);
+
+  const handleAddToCart = (shoe) => {
+    addToCart(shoe);
+    toast.success('Added to cart successfully!', {
+      position: 'top-center' // Fallback position
+    });
+    
+  };
 
   
     
@@ -112,7 +121,7 @@ export default function ProductOverviewOne() {
             <button
               type="button"
               className="h-11 w-full rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
-              onClick={() => addToCart(shoe)}
+              onClick={() => handleAddToCart(shoe)}
             >
               Add to cart
             </button>
@@ -174,6 +183,7 @@ export default function ProductOverviewOne() {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   )
 }

@@ -1,49 +1,65 @@
-import React from 'react'
+import React, { useContext, useRef, useState } from 'react';
+import { CartContext } from '../CartContext';
+import confetti from 'canvas-confetti';
+import Modal from 'react-modal';
+import { useNavigate } from 'react-router-dom';
 
 
-const products = [
-  {
-    id: 1,
-    name: 'Nike Air Force 1 07 LV8',
-    href: '#',
-    price: '₹47,199',
-    originalPrice: '₹48,900',
-    discount: '5% Off',
-    color: 'Orange',
-    size: '8 UK',
-    imageSrc:
-      'https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/54a510de-a406-41b2-8d62-7f8c587c9a7e/air-force-1-07-lv8-shoes-9KwrSk.png',
-  },
-  {
-    id: 2,
-    name: 'Nike Blazer Low 77 SE',
-    href: '#',
-    price: '₹1,549',
-    originalPrice: '₹2,499',
-    discount: '38% off',
-    color: 'White',
-    leadTime: '3-4 weeks',
-    size: '8 UK',
-    imageSrc:
-      'https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/e48d6035-bd8a-4747-9fa1-04ea596bb074/blazer-low-77-se-shoes-0w2HHV.png',
-  },
-  {
-    id: 3,
-    name: 'Nike Air Max 90',
-    href: '#',
-    price: '₹2219 ',
-    originalPrice: '₹999',
-    discount: '78% off',
-    color: 'Black',
-    imageSrc:
-      'https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/fd17b420-b388-4c8a-aaaa-e0a98ddf175f/dunk-high-retro-shoe-DdRmMZ.png',
-  },
-]
+Modal.setAppElement('#root');
 
 export function CheckoutTwo() {
+  const { cartItems, clearCart } = useContext(CartContext);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [animationComplete, setAnimationComplete] = useState(false);
+  const buttonRef = useRef(null);
+  const navigate = useNavigate()
+
+
+  const calculateTotalPrice = () => {
+    return cartItems.reduce((total, product) => {
+      const price = parseFloat(product.price.replace(/[^\d.]/g, ''));
+      return total + price;
+    }, 0).toFixed(2);
+  };
+
+  const handlePaymentClick = () => {
+    const button = buttonRef.current;
+    if (button) {
+      // Get button position and size
+      const { top, left, width, height } = button.getBoundingClientRect();
+      // Fire confetti from the button's location
+      confetti({
+        particleCount: 100,
+        angle: 90,
+        origin: {
+          x: (left + width / 2) / window.innerWidth,
+          y: (top + height / 2) / window.innerHeight,
+        },
+      });
+
+      // Show modal and handle animation
+      setShowConfetti(true);
+      setShowModal(true);
+
+      // Animation complete handler
+      setTimeout(() => {
+        setShowConfetti(false);
+        setAnimationComplete(true);
+      }, 3000); // Match the duration of the confetti animation
+
+      // Clear session storage and cart context, then redirect
+      setTimeout(() => {
+        sessionStorage.clear();
+        clearCart();
+        navigate("/");
+      }, 5000); // Give some time for the animation and modal
+    }
+  };
   return (
     <div className="mx-auto my-4 max-w-4xl md:my-6">
-      <div className="overflow-hidden  rounded-xl shadow">
+
+      <div className="overflow-hidden rounded-xl shadow">
         <div className="grid grid-cols-1 md:grid-cols-2">
           {/* Contact Info */}
           <div className="px-5 py-6 text-gray-900 md:px-8">
@@ -235,9 +251,11 @@ export function CheckoutTwo() {
                       </div>
 
                       <div className="mt-10 flex justify-end border-t border-gray-200 pt-6">
-                        <button
+                      <button
                           type="button"
+                          ref={buttonRef}
                           className="rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                          onClick={handlePaymentClick}
                         >
                           Make payment
                         </button>
@@ -252,7 +270,7 @@ export function CheckoutTwo() {
           <div className="bg-gray-100 px-5 py-6 md:px-8">
             <div className="flow-root">
               <ul className="-my-7 divide-y divide-gray-200">
-                {products.map((product) => (
+                {cartItems.map((product) => (
                   <li
                     key={product.id}
                     className="flex items-stretch justify-between space-x-5 py-7"
@@ -260,8 +278,8 @@ export function CheckoutTwo() {
                     <div className="flex flex-1 items-stretch">
                       <div className="flex-shrink-0">
                         <img
-                          className="h-20 w-20 rounded-lg border border-gray-200 bg-white object-contain"
-                          src={product.imageSrc}
+                          className="h-20 w-20 rounded-lg  border-gray-200 bg-white object-contain"
+                          src={product.images[0]}
                           alt={product.imageSrc}
                         />
                       </div>
@@ -282,7 +300,7 @@ export function CheckoutTwo() {
                         className="-m-2 inline-flex rounded p-2 text-gray-400 transition-all duration-200 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
                       >
                         <span className="sr-only">Remove</span>
-                        
+                        {/* Add remove functionality here if needed */}
                       </button>
                     </div>
                   </li>
@@ -312,16 +330,38 @@ export function CheckoutTwo() {
             <ul className="mt-6 space-y-3">
               <li className="flex items-center justify-between text-gray-600">
                 <p className="text-sm font-medium">Sub total</p>
-                <p className="text-sm font-medium">₹1,14,399</p>
+                <p className="text-sm font-medium">₹{calculateTotalPrice()}</p>
               </li>
               <li className="flex items-center justify-between text-gray-900">
                 <p className="text-sm font-medium ">Total</p>
-                <p className="text-sm font-bold ">₹1,14,399</p>
+                <p className="text-sm font-bold ">₹{calculateTotalPrice()}</p>
               </li>
             </ul>
           </div>
         </div>
       </div>
+
+      <Modal
+        isOpen={showModal}
+        onRequestClose={() => setShowModal(false)}
+        contentLabel="Order Confirmation"
+        className="fixed inset-0 flex items-center justify-center p-4 bg-black/60"
+        overlayClassName="fixed inset-0 bg-black/60"
+      >
+        <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+          <h2 className="text-xl font-semibold mb-4">Order Placed!</h2>
+          <p className="mb-4">Your order has been placed successfully and will be delivered shortly.</p>
+          <button
+            className={`px-4 py-2 rounded-md bg-black text-white font-semibold ${animationComplete ? 'opacity-100' : 'opacity-0'}`}
+            onClick={() => {
+              setShowModal(false);
+              navigate("/"); // Redirect to homepage
+            }}
+          >
+            Go to Homepage  
+          </button>
+        </div>
+      </Modal>
     </div>
-  )
+  );
 }
