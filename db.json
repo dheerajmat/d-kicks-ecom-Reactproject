@@ -1,0 +1,33 @@
+{
+  "users": [
+    {
+      "id": 0,
+      "title": "json-server",
+      "author": "typicode"
+    },
+    {
+      "fname": "dheeraj mathur",
+      "email": "dheeraj.mathur138@gmail.com",
+      "pass": "123456",
+      "id": 1
+    },
+    {
+      "fname": "jay mathur",
+      "email": "jay.mathur138@gmail.com",
+      "pass": "123456",
+      "id": 2
+    },
+    {
+      "fname": "rana",
+      "email": "jay.mathur138@gmail.com",
+      "pass": "123456",
+      "id": 3
+    },
+    {
+      "fname": "kru",
+      "email": "kru@gmail.com",
+      "pass": "456456",
+      "id": 4
+    }
+  ]
+}

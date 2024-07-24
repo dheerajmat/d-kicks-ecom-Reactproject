@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import "~react-image-gallery/styles/css/image-gallery.css";
 .App {
   text-align: center;
 }
@@ -5,6 +9,17 @@
 .App-logo {
   height: 40vmin;
   pointer-events: none;
+}
+
+.active{
+  
+  
+  border-bottom:3px solid black;
+  padding-bottom: 4px;
+  color: #6a704c;
+
+  
+  
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -24,6 +39,41 @@
   color: white;
 }
 
+@keyframes gradientAnimationn {
+  0% {
+      background-position: 0% 50%;
+  }
+  50% {
+      background-position: 100% 50%;
+  }
+  100% {
+      background-position: 0% 50%;
+  }
+}
+
+.text-gradient {
+  display: inline-block;
+  background-size: 200% 100%;
+  color: transparent;
+  background-clip: text;
+  animation: gradientAnimationn 3s linear infinite;
+}
+
+/* Additional styles for your text */
+.text-gradient {
+  font-size: 75px;
+  background-image: linear-gradient(45deg, #ff0000, #8aff8a); /* Change gradient colors here */
+  /* Add other styles as needed */
+}
+
+@media (max-width: 640px) {
+  .text-gradient {
+      font-size: 35px;
+    
+      /* Adjust other styles for smaller screens */
+  }
+}
+
 .App-link {
   color: #61dafb;
 }
@@ -36,3 +86,4 @@
     transform: rotate(360deg);
   }
 }
+
